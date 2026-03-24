@@ -1,7 +1,7 @@
  <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta name="google-site-verification" content="JSUw94K3tdDmgKzId7rsqIwkezbn0KodiQZPmJp2PWI" />
+    <meta name="google-site-verification" content="JSUw94K3tdDmgKzId7rsqIwkezbn0KodiQZPmJp2PWI" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Math Tug-of-War Pro</title>
@@ -21,13 +21,16 @@
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: white;
             overflow: hidden;
-            touch-action: none;
+            /* Prevents scrolling/zooming which often breaks multi-touch */
+            touch-action: none; 
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* Glassmorphism Classes */
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
@@ -35,10 +38,10 @@
         .glass-dark {
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Arena Styling */
         .arena-bg {
             background-color: #1a2e1a;
             background-image: 
@@ -56,29 +59,20 @@
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        /* Avatar Floating Animation */
         @keyframes float {
             0%, 100% { transform: translateY(0px) translateX(-50%); }
             50% { transform: translateY(-10px) translateX(-50%); }
         }
         .avatar-float { animation: float 3s ease-in-out infinite; }
 
-        /* Calculator Buttons Pro Look */
         .key-btn {
             position: relative;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.05s ease;
             overflow: hidden;
+            touch-action: manipulation;
         }
-        .key-btn::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
-            pointer-events: none;
-        }
-        .key-btn:active { transform: scale(0.92); filter: brightness(1.2); }
+        .key-btn:active { transform: scale(0.95); background-color: rgba(255,255,255,0.1); }
 
-        /* Smooth page transitions */
         .page {
             transition: transform 0.5s ease, opacity 0.5s ease;
             position: absolute;
@@ -88,7 +82,6 @@
         }
         .page-hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
 
-        /* Correct/Wrong Visuals */
         @keyframes success-pulse {
             0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(74, 222, 128, 0); }
@@ -109,40 +102,44 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden select-none">
+<body class="h-screen w-screen overflow-hidden">
 
-    <!-- Background Decoration -->
     <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full"></div>
     <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full"></div>
 
-    <!-- MAIN MENU PAGE -->
+    <!-- HOME PAGE -->
     <div id="page-home" class="page flex flex-col items-center justify-center p-6 text-center">
-        <div class="mb-8 relative">
+        <div class="mb-4 relative">
             <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-red-400 drop-shadow-2xl">
                 MATH WAR
             </h1>
             <div class="absolute -bottom-2 right-0 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded rotate-3 shadow-lg uppercase">Pro Edition</div>
         </div>
+        
+        <!-- DEVELOPER CREDIT -->
+        <div class="mb-10 text-white/50 text-sm font-medium tracking-widest flex items-center gap-2">
+            <div class="h-[1px] w-8 bg-white/20"></div>
+            DEVELOPED BY <span class="text-white font-bold text-blue-400">NABIN</span>
+            <div class="h-[1px] w-8 bg-white/20"></div>
+        </div>
 
         <div class="space-y-4 w-full max-w-sm">
-            <button onclick="showPage('game')" class="w-full py-5 glass rounded-2xl text-2xl font-bold hover:bg-white/10 transition-all border-b-4 border-blue-500 active:border-b-0 flex items-center justify-center gap-3">
+            <button onpointerdown="showPage('game')" class="w-full py-5 glass rounded-2xl text-2xl font-bold border-b-4 border-blue-500 active:border-b-0 flex items-center justify-center gap-3">
                 <i class="fas fa-play"></i> BATTLE NOW
             </button>
-            <button onclick="showPage('htp')" class="w-full py-4 glass rounded-2xl text-xl font-semibold hover:bg-white/10 transition-all border-b-4 border-purple-500 active:border-b-0">
+            <button onpointerdown="showPage('htp')" class="w-full py-4 glass rounded-2xl text-xl font-semibold border-b-4 border-purple-500 active:border-b-0">
                 HOW TO PLAY
             </button>
-            <button onclick="showPage('settings')" class="w-full py-4 glass rounded-2xl text-xl font-semibold hover:bg-white/10 transition-all border-b-4 border-gray-500 active:border-b-0">
+            <button onpointerdown="showPage('settings')" class="w-full py-4 glass rounded-2xl text-xl font-semibold border-b-4 border-gray-500 active:border-b-0">
                 SETTINGS
             </button>
         </div>
-
-        <p class="mt-12 text-white/40 text-sm font-medium">STRENGTHEN YOUR BRAIN, WIN THE ROPE</p>
     </div>
 
     <!-- HOW TO PLAY PAGE -->
     <div id="page-htp" class="page page-hidden flex flex-col items-center justify-center p-6">
         <div class="glass max-w-2xl w-full p-8 rounded-[40px] relative">
-            <button onclick="showPage('home')" class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors">
+            <button onpointerdown="showPage('home')" class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors">
                 <i class="fas fa-times text-2xl"></i>
             </button>
             <h2 class="text-3xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-book-open text-purple-400"></i> Mission Briefing</h2>
@@ -165,7 +162,7 @@
                 </div>
             </div>
 
-            <button onclick="showPage('home')" class="mt-10 px-8 py-3 bg-purple-600 rounded-full font-bold shadow-lg shadow-purple-900/40">UNDERSTOOD</button>
+            <button onpointerdown="showPage('home')" class="mt-10 px-8 py-3 bg-purple-600 rounded-full font-bold shadow-lg shadow-purple-900/40">UNDERSTOOD</button>
         </div>
     </div>
 
@@ -180,128 +177,94 @@
                         <p class="font-bold">Difficulty</p>
                         <p class="text-xs text-white/40">Affects numbers and operators</p>
                     </div>
-                    <select id="diff-select" class="bg-white/10 border-0 rounded-lg px-3 py-2 text-sm outline-none">
-                        <option value="easy">Easy (1-10)</option>
-                        <option value="medium" selected>Medium (1-20)</option>
-                        <option value="hard">Hard (1-50)</option>
+                    <select id="diff-select" class="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none text-white focus:border-blue-500">
+                        <option value="easy">Easy (+, -)</option>
+                        <option value="medium" selected>Medium (+, -, *, ÷)</option>
+                        <option value="hard">Hard (Big Numbers)</option>
+                        <option value="expert">Expert (Insane Math!)</option>
                     </select>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-bold">Sound Effects</p>
-                    </div>
-                    <button id="sound-toggle" class="w-12 h-6 bg-blue-600 rounded-full relative">
-                        <div class="absolute top-1 right-1 w-4 h-4 bg-white rounded-full"></div>
-                    </button>
                 </div>
             </div>
 
-            <button onclick="showPage('home')" class="mt-10 w-full py-3 glass rounded-xl font-bold border-b-2 border-gray-500">SAVE & EXIT</button>
+            <button onpointerdown="showPage('home')" class="mt-10 w-full py-3 glass rounded-xl font-bold border-b-2 border-gray-500">SAVE & EXIT</button>
         </div>
     </div>
 
     <!-- GAME PAGE -->
     <div id="page-game" class="page page-hidden flex flex-col">
-        <!-- Minimal Top HUD -->
         <div class="flex justify-between items-center px-6 py-4 z-20">
-            <button onclick="confirmExit()" class="glass-dark w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white">
+            <button onpointerdown="confirmExit()" class="glass-dark w-10 h-10 rounded-full flex items-center justify-center text-white/60">
                 <i class="fas fa-home"></i>
             </button>
             <div class="glass-dark px-4 py-1.5 rounded-full flex items-center gap-3">
-                <div id="p1-score-dot" class="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span class="text-xs font-bold uppercase tracking-widest text-white/60">Competitive Match</span>
-                <div id="p2-score-dot" class="w-3 h-3 rounded-full bg-red-500"></div>
+                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span class="text-xs font-bold uppercase tracking-widest text-white/60">Multi-Touch Enabled</span>
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
             </div>
             <div class="w-10"></div>
         </div>
 
-        <!-- Professional Arena -->
-        <div class="arena-bg h-48 md:h-64 relative flex items-center justify-center overflow-hidden shadow-2xl border-y border-white/10">
-            <!-- Ground Details -->
-            <div class="absolute inset-0 opacity-20 pointer-events-none">
-                <div class="absolute top-10 left-1/4 w-4 h-4 bg-white rounded-full blur-sm"></div>
-                <div class="absolute bottom-10 right-1/4 w-3 h-3 bg-white rounded-full blur-sm"></div>
-            </div>
-
+        <div class="arena-bg h-40 md:h-64 relative flex items-center justify-center overflow-hidden border-y border-white/10">
             <div class="w-[90%] h-4 relative">
-                <!-- Goal Areas -->
                 <div class="absolute left-[-5%] top-[-40px] bottom-[-40px] w-12 bg-blue-500/20 blur-md border-r-2 border-blue-500/40"></div>
                 <div class="absolute right-[-5%] top-[-40px] bottom-[-40px] w-12 bg-red-500/20 blur-md border-l-2 border-red-500/40"></div>
-                
-                <!-- Rope -->
-                <div class="absolute inset-0 rope-gradient rounded-full transition-all duration-300" id="visual-rope"></div>
-                
-                <!-- Central Elements -->
-                <div class="absolute left-1/2 top-[-30px] bottom-[-30px] w-[2px] bg-white/10 z-0"></div>
-                
-                <!-- Knot -->
+                <div class="absolute inset-0 rope-gradient rounded-full" id="visual-rope"></div>
                 <div id="knot" class="absolute top-[-14px] left-1/2 -translate-x-1/2 w-8 h-10 bg-red-600 rounded-lg knot-glow z-10 transition-all duration-300"></div>
-                
-                <!-- Avatars -->
                 <div id="avatar1" class="avatar-float absolute top-[-60px] left-[5%] text-5xl">🧑‍🚀</div>
                 <div id="avatar2" class="avatar-float absolute top-[-60px] left-[95%] text-5xl">🦸‍♀️</div>
             </div>
         </div>
 
-        <!-- Play Stations -->
         <div class="flex-1 flex w-full relative">
-            <!-- Player 1 Control -->
-            <div class="flex-1 p-3 md:p-6 border-r border-white/5 flex flex-col items-center">
+            <!-- P1 Controller -->
+            <div class="flex-1 p-2 md:p-6 border-r border-white/5 flex flex-col items-center">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="text-[10px] font-black bg-blue-600 px-2 py-0.5 rounded uppercase">Pilot P1</span>
                     <div id="p1-streak-box" class="streak-badge px-2 py-0.5 rounded text-[10px] font-black hidden">STREAK 🔥</div>
                 </div>
-
-                <!-- Problem Card -->
-                <div id="p1-card" class="glass w-full max-w-[280px] rounded-3xl p-4 mb-3 border-t border-white/20">
+                <div id="p1-card" class="glass w-full max-w-[280px] rounded-3xl p-4 mb-3">
                     <div id="p1-q" class="text-3xl md:text-5xl font-extrabold text-center mb-4 tracking-tighter">?</div>
-                    <div id="p1-display" class="bg-black/40 rounded-2xl h-12 md:h-14 flex items-center justify-center text-2xl md:text-3xl font-mono text-blue-400 border border-white/10">_</div>
+                    <div id="p1-display" class="bg-black/40 rounded-2xl h-12 flex items-center justify-center text-2xl font-mono text-blue-400">_</div>
                 </div>
-
-                <!-- Pro Keypad -->
                 <div class="grid grid-cols-3 gap-2 w-full max-w-[280px]">
-                    <button onclick="input(1, 1)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">1</button>
-                    <button onclick="input(1, 2)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">2</button>
-                    <button onclick="input(1, 3)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">3</button>
-                    <button onclick="input(1, 4)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">4</button>
-                    <button onclick="input(1, 5)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">5</button>
-                    <button onclick="input(1, 6)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">6</button>
-                    <button onclick="input(1, 7)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">7</button>
-                    <button onclick="input(1, 8)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">8</button>
-                    <button onclick="input(1, 9)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">9</button>
-                    <button onclick="clearInput(1)" class="key-btn bg-red-500/20 text-red-400 h-12 md:h-16 rounded-xl text-xl font-bold">C</button>
-                    <button onclick="input(1, 0)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">0</button>
-                    <button onclick="check(1)" class="key-btn bg-blue-600 h-12 md:h-16 rounded-xl text-xl font-bold shadow-lg shadow-blue-500/40">OK</button>
+                    <button onpointerdown="handleInput(1, '1')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">1</button>
+                    <button onpointerdown="handleInput(1, '2')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">2</button>
+                    <button onpointerdown="handleInput(1, '3')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">3</button>
+                    <button onpointerdown="handleInput(1, '4')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">4</button>
+                    <button onpointerdown="handleInput(1, '5')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">5</button>
+                    <button onpointerdown="handleInput(1, '6')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">6</button>
+                    <button onpointerdown="handleInput(1, '7')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">7</button>
+                    <button onpointerdown="handleInput(1, '8')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">8</button>
+                    <button onpointerdown="handleInput(1, '9')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">9</button>
+                    <button onpointerdown="handleClear(1)" class="key-btn bg-red-500/20 text-red-400 h-12 md:h-16 rounded-xl font-bold">C</button>
+                    <button onpointerdown="handleInput(1, '0')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">0</button>
+                    <button onpointerdown="handleCheck(1)" class="key-btn bg-blue-600 h-12 md:h-16 rounded-xl font-bold">OK</button>
                 </div>
             </div>
 
-            <!-- Player 2 Control -->
-            <div class="flex-1 p-3 md:p-6 flex flex-col items-center">
+            <!-- P2 Controller -->
+            <div class="flex-1 p-2 md:p-6 flex flex-col items-center">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="text-[10px] font-black bg-red-600 px-2 py-0.5 rounded uppercase">Hero P2</span>
                     <div id="p2-streak-box" class="streak-badge px-2 py-0.5 rounded text-[10px] font-black hidden">STREAK 🔥</div>
                 </div>
-
-                <!-- Problem Card -->
-                <div id="p2-card" class="glass w-full max-w-[280px] rounded-3xl p-4 mb-3 border-t border-white/20">
+                <div id="p2-card" class="glass w-full max-w-[280px] rounded-3xl p-4 mb-3">
                     <div id="p2-q" class="text-3xl md:text-5xl font-extrabold text-center mb-4 tracking-tighter">?</div>
-                    <div id="p2-display" class="bg-black/40 rounded-2xl h-12 md:h-14 flex items-center justify-center text-2xl md:text-3xl font-mono text-red-400 border border-white/10">_</div>
+                    <div id="p2-display" class="bg-black/40 rounded-2xl h-12 flex items-center justify-center text-2xl font-mono text-red-400">_</div>
                 </div>
-
-                <!-- Pro Keypad -->
                 <div class="grid grid-cols-3 gap-2 w-full max-w-[280px]">
-                    <button onclick="input(2, 1)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">1</button>
-                    <button onclick="input(2, 2)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">2</button>
-                    <button onclick="input(2, 3)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">3</button>
-                    <button onclick="input(2, 4)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">4</button>
-                    <button onclick="input(2, 5)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">5</button>
-                    <button onclick="input(2, 6)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">6</button>
-                    <button onclick="input(2, 7)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">7</button>
-                    <button onclick="input(2, 8)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">8</button>
-                    <button onclick="input(2, 9)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">9</button>
-                    <button onclick="clearInput(2)" class="key-btn bg-red-500/20 text-red-400 h-12 md:h-16 rounded-xl text-xl font-bold">C</button>
-                    <button onclick="input(2, 0)" class="key-btn glass-dark h-12 md:h-16 rounded-xl text-xl font-bold">0</button>
-                    <button onclick="check(2)" class="key-btn bg-red-600 h-12 md:h-16 rounded-xl text-xl font-bold shadow-lg shadow-red-500/40">OK</button>
+                    <button onpointerdown="handleInput(2, '1')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">1</button>
+                    <button onpointerdown="handleInput(2, '2')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">2</button>
+                    <button onpointerdown="handleInput(2, '3')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">3</button>
+                    <button onpointerdown="handleInput(2, '4')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">4</button>
+                    <button onpointerdown="handleInput(2, '5')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">5</button>
+                    <button onpointerdown="handleInput(2, '6')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">6</button>
+                    <button onpointerdown="handleInput(2, '7')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">7</button>
+                    <button onpointerdown="handleInput(2, '8')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">8</button>
+                    <button onpointerdown="handleInput(2, '9')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">9</button>
+                    <button onpointerdown="handleClear(2)" class="key-btn bg-red-500/20 text-red-400 h-12 md:h-16 rounded-xl font-bold">C</button>
+                    <button onpointerdown="handleInput(2, '0')" class="key-btn glass-dark h-12 md:h-16 rounded-xl font-bold">0</button>
+                    <button onpointerdown="handleCheck(2)" class="key-btn bg-red-600 h-12 md:h-16 rounded-xl font-bold">OK</button>
                 </div>
             </div>
         </div>
@@ -309,29 +272,29 @@
 
     <!-- WIN MODAL -->
     <div id="win-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 hidden">
-        <div class="glass max-w-sm w-full p-8 rounded-[40px] text-center border-t border-white/20">
-            <div id="win-icon" class="text-7xl mb-4">👑</div>
-            <h2 id="win-title" class="text-4xl font-black mb-2 italic tracking-tighter uppercase">PLAYER 1 VICTORIOUS</h2>
-            <p class="text-white/60 mb-8 font-medium">Mathematics level: Genius</p>
-            <button onclick="showPage('home')" class="w-full py-4 bg-white text-black rounded-2xl font-bold text-xl transition-transform active:scale-95">CONTINUE</button>
+        <div class="glass max-w-sm w-full p-8 rounded-[40px] text-center">
+            <div class="text-7xl mb-4 animate-bounce">🏆</div>
+            <h2 id="win-title" class="text-4xl font-black mb-2 italic tracking-tighter uppercase">PLAYER WINS!</h2>
+            <p class="text-white/60 mb-8 font-medium">Amazing calculations!</p>
+            <div class="space-y-3">
+                <button onpointerdown="restartGame()" class="w-full py-4 bg-blue-500 rounded-2xl font-bold text-xl">PLAY AGAIN</button>
+                <button onpointerdown="exitToHomeFromWin()" class="w-full py-3 bg-white/10 rounded-2xl font-bold">MAIN MENU</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Game Configuration
         let gameState = {
             isPlaying: false,
-            ropePos: 50, // 0 to 100
+            ropePos: 50,
             p1: { input: "", problem: {}, streak: 0 },
             p2: { input: "", problem: {}, streak: 0 },
             difficulty: 'medium'
         };
 
-        // UI Helpers
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('page-hidden'));
             document.getElementById(`page-${pageId}`).classList.remove('page-hidden');
-            
             if (pageId === 'game') initGame();
         }
 
@@ -340,127 +303,136 @@
             gameState.ropePos = 50;
             gameState.p1.streak = 0;
             gameState.p2.streak = 0;
-            gameState.difficulty = document.getElementById('diff-select').value;
+            gameState.difficulty = document.getElementById('diff-select')?.value || 'medium';
+            
+            document.getElementById('p1-streak-box').classList.add('hidden');
+            document.getElementById('p2-streak-box').classList.add('hidden');
             
             newProblem(1);
             newProblem(2);
             updateUI();
         }
 
+        function restartGame() {
+            document.getElementById('win-modal').classList.add('hidden');
+            initGame();
+        }
+
+        function exitToHomeFromWin() {
+            document.getElementById('win-modal').classList.add('hidden');
+            showPage('home');
+        }
+
         function newProblem(playerNum) {
-            const range = gameState.difficulty === 'easy' ? 10 : (gameState.difficulty === 'hard' ? 50 : 20);
-            const ops = ['+', '-'];
-            if (gameState.difficulty !== 'easy') ops.push('*');
+            const diff = gameState.difficulty;
+            let ops = ['+', '-'];
+            if (['medium', 'hard', 'expert'].includes(diff)) ops.push('*', '/');
             
             const op = ops[Math.floor(Math.random() * ops.length)];
-            let n1 = Math.floor(Math.random() * range) + 1;
-            let n2 = Math.floor(Math.random() * range) + 1;
+            let n1, n2, a, q;
             
-            // Cleanup for division/multiplication
-            if (op === '-') if (n1 < n2) [n1, n2] = [n2, n1];
-            
-            let symbol = op === '*' ? '×' : op;
-            let ans = eval(`${n1}${op}${n2}`);
-            
-            gameState[`p${playerNum}`].problem = { q: `${n1} ${symbol} ${n2}`, a: ans.toString() };
+            let maxVal = diff === 'easy' ? 12 : (diff === 'medium' ? 25 : 60);
+
+            if (op === '+') {
+                n1 = Math.floor(Math.random() * maxVal) + 1;
+                n2 = Math.floor(Math.random() * maxVal) + 1;
+                a = n1 + n2; q = `${n1} + ${n2}`;
+            } else if (op === '-') {
+                n1 = Math.floor(Math.random() * maxVal) + 5;
+                n2 = Math.floor(Math.random() * n1) + 1;
+                a = n1 - n2; q = `${n1} - ${n2}`;
+            } else if (op === '*') {
+                n1 = Math.floor(Math.random() * 10) + 2;
+                n2 = Math.floor(Math.random() * 10) + 2;
+                a = n1 * n2; q = `${n1} × ${n2}`;
+            } else {
+                n2 = Math.floor(Math.random() * 9) + 2;
+                a = Math.floor(Math.random() * 9) + 1;
+                n1 = n2 * a; q = `${n1} ÷ ${n2}`;
+            }
+
+            gameState[`p${playerNum}`].problem = { q, a: a.toString() };
             gameState[`p${playerNum}`].input = "";
-            
-            document.getElementById(`p${playerNum}-q`).textContent = gameState[`p${playerNum}`].problem.q;
+            document.getElementById(`p${playerNum}-q`).textContent = q;
             updateDisplay(playerNum);
         }
 
-        function input(playerNum, val) {
+        function handleInput(player, val) {
             if (!gameState.isPlaying) return;
-            if (gameState[`p${playerNum}`].input.length < 5) {
-                gameState[`p${playerNum}`].input += val;
-                updateDisplay(playerNum);
+            if (gameState[`p${player}`].input.length < 5) {
+                gameState[`p${player}`].input += val;
+                updateDisplay(player);
             }
         }
 
-        function clearInput(playerNum) {
-            gameState[`p${playerNum}`].input = "";
-            updateDisplay(playerNum);
+        function handleClear(player) {
+            gameState[`p${player}`].input = "";
+            updateDisplay(player);
         }
 
-        function updateDisplay(playerNum) {
-            const disp = document.getElementById(`p${playerNum}-display`);
-            disp.textContent = gameState[`p${playerNum}`].input || "_";
-            disp.classList.remove('error-shake', 'success-hit');
-        }
-
-        function check(playerNum) {
+        function handleCheck(player) {
             if (!gameState.isPlaying) return;
-            const p = gameState[`p${playerNum}`];
-            const card = document.getElementById(`p${playerNum}-card`);
+            const p = gameState[`p${player}`];
+            const card = document.getElementById(`p${player}-card`);
             
             if (p.input === p.problem.a) {
-                // SUCCESS
                 p.streak++;
-                const pull = 6 + (Math.min(p.streak, 5) * 1.5); // Streak bonus
-                gameState.ropePos += (playerNum === 1 ? -pull : pull);
+                let pull = 6 + (Math.min(p.streak, 5) * 1.5);
+                gameState.ropePos += (player === 1 ? -pull : pull);
                 
                 card.classList.add('success-hit');
                 setTimeout(() => card.classList.remove('success-hit'), 500);
-                
-                if (p.streak >= 3) document.getElementById(`p${playerNum}-streak-box`).classList.remove('hidden');
-                
-                newProblem(playerNum);
+                if (p.streak >= 3) document.getElementById(`p${player}-streak-box`).classList.remove('hidden');
+                newProblem(player);
             } else {
-                // FAIL
                 p.streak = 0;
-                document.getElementById(`p${playerNum}-streak-box`).classList.add('hidden');
+                document.getElementById(`p${player}-streak-box`).classList.add('hidden');
                 card.classList.add('error-shake');
                 setTimeout(() => card.classList.remove('error-shake'), 400);
                 p.input = "";
-                updateDisplay(playerNum);
+                updateDisplay(player);
             }
-            
             updateUI();
             checkVictory();
         }
 
+        function updateDisplay(player) {
+            const disp = document.getElementById(`p${player}-display`);
+            disp.textContent = gameState[`p${player}`].input || "_";
+        }
+
         function updateUI() {
             const knot = document.getElementById('knot');
-            const visualRope = document.getElementById('visual-rope');
             const a1 = document.getElementById('avatar1');
             const a2 = document.getElementById('avatar2');
-            
             knot.style.left = `${gameState.ropePos}%`;
-            
-            // Distort avatars based on pull
             a1.style.left = `${Math.max(5, gameState.ropePos - 40)}%`;
             a2.style.left = `${Math.min(95, gameState.ropePos + 40)}%`;
         }
 
         function checkVictory() {
             if (gameState.ropePos <= 5) announceWin(1);
-            if (gameState.ropePos >= 95) announceWin(2);
+            else if (gameState.ropePos >= 95) announceWin(2);
         }
 
-        function announceWin(playerNum) {
+        function announceWin(player) {
             gameState.isPlaying = false;
             const modal = document.getElementById('win-modal');
             const title = document.getElementById('win-title');
-            
-            title.textContent = `PLAYER ${playerNum} VICTORIOUS`;
-            title.style.color = playerNum === 1 ? '#3b82f6' : '#ef4444';
-            
+            title.textContent = `PLAYER ${player} WINS!`;
+            title.className = `text-4xl font-black mb-2 italic tracking-tighter uppercase ${player === 1 ? 'text-blue-500' : 'text-red-500'}`;
             modal.classList.remove('hidden');
         }
 
         function confirmExit() {
-            if (confirm("Exit to main menu? Your progress will be lost.")) {
-                showPage('home');
-            }
+            if (confirm("Exit game?")) showPage('home');
         }
 
-        // Handle enter/backspace for accessibility
-        window.addEventListener('keydown', (e) => {
-            if (e.key === "Backspace") {
-                // Would need to know which player is active, but this is a 2-player local game
-                // Usually keys are reserved for separate players on desktop
-            }
-        });
+        window.onload = () => {
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
+        };
     </script>
 </body>
 </html>
